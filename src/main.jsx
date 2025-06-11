@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import MainMenu from "./main-menu.jsx";
-import ObstacleGame from "./App.jsx";
+import ObstacleGame from "./ObstacleGame.jsx";
 import CharacterSelect from "./character-select.jsx";
 import {
 	BrowserRouter as Router,

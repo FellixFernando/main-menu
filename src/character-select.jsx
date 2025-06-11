@@ -14,6 +14,7 @@ export default function CharacterSelect() {
 	const navigate = useNavigate();
 	const { triggerTransition } = useTransition();
 	const [selected, setSelected] = useState(null);
+	const [username, setUsername] = useState("");
 	const bgMusicRef = useRef(null);
 
 	// New state for animated character display
@@ -85,10 +86,12 @@ export default function CharacterSelect() {
 	const handleStartGame = () => {
 		const audio = new Audio(clickSound);
 		audio.play();
-		// Pass selected character to the game route
+		// Pass selected character and username to the game route
 		setTimeout(() => {
 			triggerTransition("split_diagonal", 1200, () =>
-				navigate("/game", { state: { character: selected } })
+				navigate("/game", {
+					state: { character: selected, username: username },
+				})
 			);
 		}, 250);
 	};
@@ -114,11 +117,25 @@ export default function CharacterSelect() {
 				Back to Menu
 			</button>
 			<h1 className="character-select-title">Select Your Character</h1>
+			<div className="username-input-container">
+				<label htmlFor="username" className="username-input-label">
+					Enter Your Username
+				</label>
+				<input
+					type="text"
+					id="username"
+					className="username-input"
+					value={username}
+					onChange={(e) => setUsername(e.target.value)}
+					placeholder="Type your username..."
+					maxLength={15}
+				/>
+			</div>
 			<div className="character-select-content">
 				<button
 					className="play-btn-small"
 					onClick={handleStartGame}
-					disabled={!selected}>
+					disabled={!selected || !username.trim()}>
 					<img src={playImg} alt="Play" />
 				</button>
 				<div className="character-grid">
