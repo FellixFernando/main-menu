@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTransition } from "./TransitionContext";
 import clickSound from "./button-click.mp3";
 import "./ObstacleGame.css"; // Make sure the path is correct relative to this file
 import ucup2 from "./ucup2.png";
+import spritesCewe from "./spritesCewe.png";
 import rock1 from "./rock1.png"; // Import the rock image
 import rock2 from "./rock2.png";
 import rock4 from "./rock4.png";
@@ -17,6 +18,8 @@ const MAP_BORDER_PX = 60; // Border width in pixels
 
 export default function ObstacleGame() {
 	const navigate = useNavigate();
+	const location = useLocation();
+	const selectedCharacter = location.state?.character || "ucup2"; // Default to ucup2 if no character selected
 	const { triggerTransition } = useTransition();
 	const [gameStarted, setGameStarted] = useState(false);
 	const [gameOver, setGameOver] = useState(false);
@@ -111,7 +114,7 @@ export default function ObstacleGame() {
 			const updatedObstacles = obstacles
 				.map((obstacle) => ({
 					...obstacle,
-					y: obstacle.y + deltaTime * 0.15, // Slightly reduced speed for smoother movement
+					y: obstacle.y + deltaTime * 0.11, // Slightly reduced speed for smoother movement
 				}))
 				.filter((obstacle) => obstacle.y < 100); // Remove off-screen obstacles
 
@@ -264,8 +267,8 @@ export default function ObstacleGame() {
 
 			// Gradually decrease spawn interval as game progresses for increasing difficulty
 			const progress = 1 - timeLeft / GAME_DURATION;
-			const minDelay = (800 - 400 * progress) * 0.8;
-			const maxDelay = (1500 - 700 * progress) * 0.8;
+			const minDelay = (800 - 700 * progress) * 0.8; // Increased from 400 to 700 for faster difficulty ramp
+			const maxDelay = (1500 - 1400 * progress) * 0.8; // Increased from 700 to 1400
 			const nextDelay = minDelay + Math.random() * (maxDelay - minDelay);
 
 			obstacleTimerRef.current = setTimeout(spawnAndScheduleNext, nextDelay);
@@ -340,6 +343,11 @@ export default function ObstacleGame() {
 		}, 250); // 250ms delay before starting overlay
 	};
 
+	// Add this function to get the correct spritesheet
+	const getPlayerSpritesheet = () => {
+		return selectedCharacter === "ceweGede" ? spritesCewe : ucup2;
+	};
+
 	return (
 		<div className="game-container">
 			<button className="back-button" onClick={handleBackToMenu}>
@@ -359,31 +367,15 @@ export default function ObstacleGame() {
 				style={{ backgroundPositionY: `${backgroundPosition}px` }}>
 				{/* Player with improved positioning */}
 				<div
-					className="character"
-					facing={playerDirection}
-					walking={playerMoving ? "true" : "false"}
+					className="player"
 					style={{
-						left: `calc(${playerPosition}% - 48px)`,
-						bottom: `${playerBottomOffsetPx}px`,
-						width: `96px`,
-						height: `96px`,
-						position: "absolute",
-						overflow: "hidden",
-					}}>
-					<div
-						className="character_spritesheet"
-						style={{
-							width: "384px",
-							height: "96px",
-							backgroundImage: `url(${ucup2})`,
-							backgroundRepeat: "no-repeat",
-							backgroundPositionX: `-${playerFrame * 96}px`,
-							backgroundPositionY:
-								playerDirection === "left" ? "-120px" : "-216px",
-							backgroundSize: "384px 384px",
-						}}
-					/>
-				</div>
+						left: `${playerPosition}%`,
+						backgroundImage: `url(${getPlayerSpritesheet()})`,
+						backgroundPositionX: `-${playerFrame * 96}px`,
+						backgroundPositionY:
+							playerDirection === "right" ? "-216px" : "-120px",
+					}}
+				/>
 				{/* Obstacles with improved rendering */}
 				{obstacles.map((obstacle) => (
 					<div

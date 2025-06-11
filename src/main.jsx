@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import MainMenu from "./main-menu.jsx";
 import ObstacleGame from "./App.jsx";
+import CharacterSelect from "./character-select.jsx";
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -13,18 +14,21 @@ import { TransitionProvider } from "./TransitionContext";
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
 		<TransitionProvider>
-		<Router>
-			<Routes>
+			<Router>
+				<Routes>
 					{/* Main menu route */}
-				<Route path="/" element={<MainMenu />} />
+					<Route path="/" element={<MainMenu />} />
+
+					{/* Character selection route */}
+					<Route path="/character-select" element={<CharacterSelect />} />
 
 					{/* Game route */}
-				<Route path="/game" element={<ObstacleGame />} />
+					<Route path="/game" element={<ObstacleGame />} />
 
 					{/* Catch all route - redirect to main menu */}
 					<Route path="*" element={<Navigate to="/" replace />} />
-			</Routes>
-		</Router>
+				</Routes>
+			</Router>
 		</TransitionProvider>
 	</StrictMode>
 );

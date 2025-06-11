@@ -5,6 +5,11 @@
 	pointer-events: none;
 	z-index: 9999;
 }
+
+.easytransitions_transition.hidden {
+	display: none;
+}
+
 .easytransitions_transition div {
 	width: 200px;
 	height: 200px;

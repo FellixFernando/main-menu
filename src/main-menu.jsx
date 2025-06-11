@@ -13,7 +13,10 @@ export default function MainMenu() {
 	const navigate = useNavigate();
 	const { triggerTransition } = useTransition();
 	const bgMusicRef = useRef(null);
-	const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+	const [isMusicPlaying, setIsMusicPlaying] = useState(() => {
+		const savedMusicState = localStorage.getItem("isMusicPlaying");
+		return savedMusicState ? JSON.parse(savedMusicState) : false;
+	});
 	const audioContextRef = useRef(null);
 	const [showMakers, setShowMakers] = useState(false);
 
@@ -86,9 +89,11 @@ export default function MainMenu() {
 			if (isMusicPlaying) {
 				bgMusicRef.current.pause();
 				setIsMusicPlaying(false);
+				localStorage.setItem("isMusicPlaying", "false");
 			} else {
 				await bgMusicRef.current.play();
 				setIsMusicPlaying(true);
+				localStorage.setItem("isMusicPlaying", "true");
 			}
 		} catch (error) {
 			console.log("Error toggling music:", error);
@@ -103,31 +108,16 @@ export default function MainMenu() {
 			bgMusicRef.current.currentTime = 0;
 		}
 		setTimeout(() => {
-			triggerTransition("split_diagonal", 1200, () => navigate("/game"));
+			triggerTransition("split_diagonal", 1200, () =>
+				navigate("/character-select")
+			);
 		}, 250);
 	};
 
-	const menuContainerStyle = {
-		width: "100%",
-		height: "100%",
-		margin: 0,
-		padding: 0,
-		backgroundColor: "#3E92D1",
-		backgroundImage: `url(${mainMenuBg})`,
-		backgroundSize: "contain",
-		backgroundPosition: "center",
-		backgroundRepeat: "no-repeat",
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
-		justifyContent: "center",
-		position: "fixed",
-		inset: 0,
-		boxSizing: "border-box",
-	};
-
 	return (
-		<div style={menuContainerStyle}>
+		<div
+			className="menu-container"
+			style={{ backgroundImage: `url(${mainMenuBg})` }}>
 			<div className="menu-title-wrapper">
 				<img src={papanImg} alt="Papan" className="papan-bg" />
 				<h1 className="menu-title">

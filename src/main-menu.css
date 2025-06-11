@@ -262,3 +262,21 @@
 	text-align: center;
 	padding: 0.5rem 0;
 }
+
+.menu-container {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	background-color: #3e92d1;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: fixed;
+	inset: 0;
+	box-sizing: border-box;
+}
